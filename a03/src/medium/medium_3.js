@@ -1,4 +1,4 @@
-import mpg_data from "./data/mpg_data.js";
+import mpg_data from './data/mpg_data.js';
 
 /*
 mpg_data is imported for you but that is for testing purposes only. All of the functions should use
@@ -18,9 +18,10 @@ queries.
  *
  */
 export function searchHighPower(car_data, minHorsepower, minTorque) {
-
+	return car_data
+		.filter(({ horsepower, torque }) => horsepower >= minHorsepower && torque >= minTorque)
+		.sort((a, b) => b.horsepower - a.horsepower);
 }
-
 
 /**
  * @param {array} car_data
@@ -33,9 +34,10 @@ export function searchHighPower(car_data, minHorsepower, minTorque) {
  *
  */
 export function searchMpg(car_data, minCity, minHighway) {
-
+	return car_data
+		.filter(({ highway_mpg, city_mpg }) => highway_mpg >= minHighway && city_mpg >= minCity)
+		.sort((a, b) => b.highway_mpg - a.highway_mpg);
 }
-
 
 /**
  * Find all cars where 'id' contains the search term below.
@@ -46,9 +48,14 @@ export function searchMpg(car_data, minCity, minHighway) {
  * @returns {[]} array of cars
  */
 export function searchName(car_data, searchTerm) {
-
+	return car_data
+		.filter(({ id }) => id.toLowerCase().includes(searchTerm.toLowerCase()))
+		.sort(
+			(a, b) =>
+				a.id.toLowerCase().indexOf(searchTerm.toLowerCase()) -
+				b.id.toLowerCase().indexOf(searchTerm.toLowerCase())
+		);
 }
-
 
 /**
  * Find all cars made in the years asked for.
@@ -59,5 +66,16 @@ export function searchName(car_data, searchTerm) {
  * @returns {[]} an array of car objects
  */
 export function searchByYear(car_data, years) {
-
+	return car_data.filter(({ year }) => years.includes(year)).sort((a, b) => b.year - a.year);
 }
+
+// Tests
+console.log(searchHighPower(mpg_data, 600, 400));
+console.log(searchMpg(mpg_data, 30, 30));
+console.log(searchName(mpg_data, 'bent'));
+console.log(
+	searchByYear(mpg_data, [
+		2010,
+		2012
+	])
+);

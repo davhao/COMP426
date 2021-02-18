@@ -15,18 +15,21 @@
  *                from calling the function
  */
 export const repeat = (fn, n, ...params) => {
+	const res = [];
+	for (let i = n; i > 0; i--) {
+		res.push(fn(...params));
+	}
 
+	return res;
 };
-
 
 /**
  * Use the repeat function to log the string "Hello, world!" to the console
  *   10 times.
  */
 export const repeatDemo = () => {
-
+	repeat(() => console.log('Hello, world!'), 10);
 };
-
 
 /**************************************************************************
  *
@@ -40,26 +43,18 @@ export const repeatDemo = () => {
  *   parameter "num2". The returned function should calculate and return the
  *   product of num1 and num2.
  */
-export const multiplyBy = (num1) => {
-
-};
-
-
+export const multiplyBy = (num1) => (num2) => num1 * num2;
 /**
  * Use the multiplyBy function to create and export a function named
  *   "tenTimes" that multiplies a number by 10.
  */
-export const tenTimes = undefined;
-
+export const tenTimes = (num) => multiplyBy(10)(num);
 
 /**
  * Write and export a function named "tenTimesFifty" which uses the tenTimes
  *   function to multiply 50 by 10 and returns the result.
  */
-export const tenTimesFifty = () => {
-
-};
-
+export const tenTimesFifty = () => tenTimes(50);
 
 /**************************************************************************
  *
@@ -85,9 +80,16 @@ export const tenTimesFifty = () => {
  *    everyEven([1, 1, 0, 1, 1], x => x === 1)  <--  returns false
  */
 export const everyEven = (arr, test) => {
+	let i = 0;
+	while (i < arr.length) {
+		if (!test(arr[i])) {
+			return false;
+		}
+		i += 2;
+	}
 
+	return true;
 };
-
 
 /**
  * Write and export a function named "someEven" which takes an array and a test
@@ -109,9 +111,16 @@ export const everyEven = (arr, test) => {
  *    someEven([0, 0, 0, 0, 0], x => x === 0)  <--  returns true
  */
 export const someEven = (arr, test) => {
+	let i = 0;
+	while (i < arr.length) {
+		if (test(arr[i])) {
+			return true;
+		}
+		i += 2;
+	}
 
+	return false;
 };
-
 
 /**
  * Write and export a function named "filter" which takes an array and a test
@@ -135,29 +144,24 @@ export const someEven = (arr, test) => {
  *       -->  { pass: [1, 5, 31], fail: [90] }
  */
 export const filter = (arr, test) => {
-
+	const pass = arr.filter((elt) => test(elt));
+	const fail = arr.filter((elt) => !test(elt));
+	return { pass, fail };
 };
-
 
 /**
  * Write and export a function named "allEvensAreOdd" which takes as input an
  *   array and returns true only if all of the even elements in the array are
  *   odd numbers. Use the "everyEven" function in this function.
  */
-export const allEvensAreOdd = (arr) => {
-
-};
-
+export const allEvensAreOdd = (arr) => everyEven(arr, (num) => num % 2 === 1);
 
 /**
  * Write and export a function named "anEvenIsOdd" which takes as input an
  *   array and returns true if at least one of the even-indexed elements in the
  *   array is an odd number. Use the "someEven" function in this function.
  */
-export const anEvenIsOdd = (arr) => {
-
-};
-
+export const anEvenIsOdd = (arr) => someEven(arr, (num) => num % 2 === 1);
 
 /**
  * Write and export a function named "hasExactly" which takes an array, a test
@@ -165,6 +169,148 @@ export const anEvenIsOdd = (arr) => {
  *   The "hasExactly" function should return true only if exactly n elements
  *   pass the test. You must use the filter function.
  */
-export const hasExactly = (arr, test, n) => {
+export const hasExactly = (arr, test, n) => filter(arr, test).pass.length === n;
 
-};
+// Test
+console.log(repeat((poop, nice) => console.log(poop, nice), 10, 'poop', 'nice'));
+
+// repeatDemo();
+
+// console.log(tenTimes(42));
+
+// console.log(tenTimesFifty());
+
+// console.log(
+// 	everyEven(
+// 		[
+// 			1,
+// 			5,
+// 			1,
+// 			0,
+// 			1
+// 		],
+// 		(x) => x === 1
+// 	)
+// );
+// console.log(
+// 	everyEven(
+// 		[
+// 			1,
+// 			1,
+// 			0,
+// 			1,
+// 			1
+// 		],
+// 		(x) => x === 1
+// 	)
+// );
+
+// console.log(
+// 	someEven(
+// 		[
+// 			4,
+// 			3,
+// 			2,
+// 			1,
+// 			0
+// 		],
+// 		(x) => x === 3
+// 	)
+// );
+// console.log(
+// 	someEven(
+// 		[
+// 			1,
+// 			0,
+// 			1,
+// 			0,
+// 			1
+// 		],
+// 		(x) => x === 0
+// 	)
+// );
+// console.log(
+// 	someEven(
+// 		[
+// 			1,
+// 			1,
+// 			1,
+// 			1,
+// 			0
+// 		],
+// 		(x) => x === 0
+// 	)
+// );
+// console.log(
+// 	someEven(
+// 		[
+// 			0,
+// 			0,
+// 			0,
+// 			0,
+// 			0
+// 		],
+// 		(x) => x === 0
+// 	)
+// );
+
+// console.log(
+// 	filter(
+// 		[
+// 			'yes',
+// 			'nope',
+// 			'maybe',
+// 			'yellow'
+// 		],
+// 		(x) => x[0] === 'y'
+// 	)
+// );
+// console.log(
+// 	filter(
+// 		[
+// 			1,
+// 			90,
+// 			5,
+// 			31
+// 		],
+// 		(x) => x % 2 === 1
+// 	)
+// );
+
+// console.log(
+// 	allEvensAreOdd([
+// 		1,
+// 		2,
+// 		3,
+// 		4,
+// 		5
+// 	])
+// );
+
+// console.log(
+// 	allEvensAreOdd([
+// 		2,
+// 		3,
+// 		4,
+// 		5
+// 	])
+// );
+
+// console.log(
+// 	anEvenIsOdd([
+// 		2,
+// 		4,
+// 		6,
+// 		8,
+// 		1
+// 	])
+// );
+
+// console.log(
+// 	anEvenIsOdd([
+// 		2,
+// 		4,
+// 		6,
+// 		8
+// 	])
+// );

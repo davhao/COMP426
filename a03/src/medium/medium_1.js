@@ -1,4 +1,5 @@
-import {variance} from "./data/stats_helpers.js";
+import { variance } from './data/stats_helpers.js';
+import { maxAndMin } from '../mild/mild_1.js';
 
 /**
  * Gets the sum of an array of numbers.
@@ -8,9 +9,8 @@ import {variance} from "./data/stats_helpers.js";
  * prototype functions. Very useful
  */
 export function getSum(array) {
-
+	return array.reduce((sum, num) => sum + num, 0);
 }
-
 
 /**
  * Calculates the median of an array of numbers.
@@ -22,7 +22,9 @@ export function getSum(array) {
  * console.log(getMedian(array)); // 4.5
  */
 export function getMedian(array) {
-
+	array.sort((a, b) => a - b);
+	const mid = Math.floor(array.length / 2);
+	return array.length % 2 === 0 ? (array[mid] + array[mid - 1]) / 2 : array[mid];
 }
 
 /**
@@ -45,6 +47,52 @@ export function getMedian(array) {
  }
  */
 export function getStatistics(array) {
-
+	return {
+		length             : array.length,
+		sum                : getSum(array),
+		mean               : getSum(array) / array.length,
+		median             : getMedian(array),
+		...maxAndMin(array),
+		variance           : variance(array, getSum(array) / array.length),
+		standard_deviation : variance(array, getSum(array) / array.length) ** 0.5
+	};
 }
 
+// Tests
+console.log(
+	getSum([
+		1,
+		2,
+		3,
+		4,
+		5
+	])
+);
+
+let array = [
+	3,
+	2,
+	5,
+	6,
+	2,
+	7,
+	4,
+	2,
+	7,
+	5
+];
+console.log(getMedian(array)); // 4.5
+
+console.log(
+	getStatistics([
+		3,
+		2,
+		4,
+		5,
+		5,
+		5,
+		2,
+		6,
+		7
+	])
+);
