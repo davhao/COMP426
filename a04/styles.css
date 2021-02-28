@@ -1,0 +1,43 @@
+#root {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	background-color: #102849;
+}
+
+.hero-card {
+	width: 350px !important;
+	margin: 1rem;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.card-image {
+	display: flex !important;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+.hero-subtitle {
+	display: flex;
+	justify-content: center;
+}
+
+.card-content-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+}
+
+.edit-button-container {
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	padding: 2rem;
+}
