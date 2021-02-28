@@ -65,11 +65,11 @@ export const renderHeroCard = function(hero) {
 	return $(card);
 };
 
-const textField = (label, placeholder) =>
+const textField = (label, value) =>
 	`
 	<label class="label">${label}</label>
 	<div class="control">
-	  <input class="input" type="text" placeholder='${placeholder}'>
+	  <input class="input" type="text" value='${value}'>
 	</div>`;
 
 /**
@@ -105,29 +105,33 @@ export const renderHeroEditForm = function(hero) {
 		.html(
 			`<label class="label">Description</label>
 	<div class="control">
-	  <textarea class="textarea" placeholder="Brief overview of this superhero"></textarea>
+	  <textarea class="textarea">${hero.description}</textarea>
 	</div>`
 		)
 		.addClass('field');
 	const firstSeen = $(document.createElement('div')).html(`
 	<label class="label">First Seen</label>
 	<div class="control">
-	  <input class="input" type="date">
+	  <input class="input" type="date" value='${hero.firstSeen.toISOString().split('T')[0]}'>
 	</div>
 	`);
 
-	const buttonContainer = $(document.createElement('div')).addClass('edit-button-container');
 	const cancelButton = $(document.createElement('button'))
+		.attr('type', 'submit')
 		.text('Cancel')
-		.addClass('button is-danger edit-button')
+		.addClass('button is-danger cancel-button')
 		.css('margin-right', '5px');
-	const editButton = $(document.createElement('button')).text('Save').addClass('button is-dark edit-button');
-	buttonContainer.append(cancelButton).append(editButton);
+	const saveButton = $(document.createElement('button'))
+		.attr('type', 'submit')
+		.text('Save')
+		.addClass('button is-dark save-button');
+
+	const buttonContainer = $(document.createElement('div')).addClass('cancel-save-button-container');
+	buttonContainer.append(cancelButton).append(saveButton);
 
 	const cardContentContainer = $(document.createElement('div'))
 		.addClass('card-content-container')
 		.append(content)
-		.append(buttonContainer)
 		.css('width', '100%');
 
 	// Assemble
@@ -139,6 +143,7 @@ export const renderHeroEditForm = function(hero) {
 	form.append(last);
 	form.append(desc);
 	form.append(firstSeen);
+	form.append(buttonContainer);
 
 	content.append(form);
 
