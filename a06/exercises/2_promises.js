@@ -1,5 +1,4 @@
-import { heroData } from "./data";
-
+import { heroData } from './data';
 
 /**
  * This function does the same thing as getHeroByIdCallback() did---that is, it
@@ -17,39 +16,47 @@ import { heroData } from "./data";
  *                             after 1.5 seconds if no hero could be found
  */
 export function getHeroByIdPromise(heroData, id) {
-  // 1. Return a new Promise object. See the assignment write-up for
-  //    instructions of how to use the new Promise() constructor.
+	// 1. Return a new Promise object. See the assignment write-up for
+	//    instructions of how to use the new Promise() constructor.
 
-  // 2. Inside the Promise object's function, find the hero with the correct id
-  //    in the heroData array.
+	// 2. Inside the Promise object's function, find the hero with the correct id
+	//    in the heroData array.
 
-  // 3. Inside the Promise object's function, use setTimeout() to execute code
-  //    after 1.5 seconds. See the assignment write-up for instructions of how
-  //    to use setTimeout().
+	// 3. Inside the Promise object's function, use setTimeout() to execute code
+	//    after 1.5 seconds. See the assignment write-up for instructions of how
+	//    to use setTimeout().
 
-  // 4. After 1.5 seconds, either execute the resolve() callback passing in the
-  //    found hero as a parameter, or execute the reject() callback if no hero
-  //    was found.
+	// 4. After 1.5 seconds, either execute the resolve() callback passing in the
+	//    found hero as a parameter, or execute the reject() callback if no hero
+	//    was found.
+
+	return new Promise((resolve, reject) => {
+		const hero = heroData.find((hero) => hero.id == id);
+		setTimeout(() => {
+			if (hero) {
+				resolve(hero);
+			}
+			else {
+				reject(`Hero with id ${id} not found.`);
+			}
+		}, 1500);
+	});
 }
 
-
 // Uncomment this code to locally run your getHeroByIdCallback() function
-/*
 const hero2 = getHeroByIdPromise(heroData, 2)
-  .then(hero => {
-    console.log(`Found the hero with id ${hero.id}`, hero);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+	.then((hero) => {
+		console.log(`Found the hero with id ${hero.id}`, hero);
+	})
+	.catch((error) => {
+		console.log(error);
+	});
 console.log(`logging hero2 and should be a promise ${hero2}`);
 
-
 const heroError = getHeroByIdPromise(heroData, 20)
-  .then(hero => {
-    console.log(`Found the hero with id ${hero.id}`, hero);
-  })
-  .catch(error => {
-    console.log(error);
-  });
-*/
+	.then((hero) => {
+		console.log(`Found the hero with id ${hero.id}`, hero);
+	})
+	.catch((error) => {
+		console.log(error);
+	});

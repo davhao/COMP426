@@ -1,5 +1,4 @@
-import { heroData } from "./data";
-
+import { heroData } from './data';
 
 /**
  * Again, this function does the same thing as getHeroByIdCallback() and
@@ -18,28 +17,31 @@ import { heroData } from "./data";
  *                             after 1.5 seconds if no hero could be found
  */
 export function getHeroByIdAsync(heroData, id) {
-  // Copy-and-paste code here
+	// Copy-and-paste code here
+	return new Promise((resolve, reject) => {
+		const hero = heroData.find((hero) => hero.id == id);
+		setTimeout(() => {
+			if (hero) {
+				resolve(hero);
+			}
+			else {
+				reject(`Hero with id ${id} not found.`);
+			}
+		}, 1500);
+	});
 }
-
 
 // Uncomment this code to locally run your getHeroByIdCallback() function
-/*
 async function run() {
-  const hero2 = await getHeroByIdAsync(heroData, 2);
-  console.log(`Because we are awaiting, this will run after the hero2 promise finishes: ${JSON.stringify(hero2, null, 2)}`);
+	const hero2 = await getHeroByIdAsync(heroData, 2);
+	console.log(
+		`Because we are awaiting, this will run after the hero2 promise finishes: ${JSON.stringify(hero2, null, 2)}`
+	);
 
-  try {
-    const heroError = await getHeroByIdAsync(heroData, 20);
-  } catch (error) {
-    console.log(error);
-  }
+	try {
+		const heroError = await getHeroByIdAsync(heroData, 20);
+	} catch (error) {
+		console.log(error);
+	}
 }
 run();
-*/
-
-
-
-
-
-
-
