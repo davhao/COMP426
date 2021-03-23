@@ -20,6 +20,12 @@ export default class Game {
 		};
 
 		this.setupNewGame();
+
+		this.boardObservers = {
+			move : [],
+			win  : [],
+			lose : []
+		};
 	}
 
 	/**
@@ -72,8 +78,10 @@ export default class Game {
 	/**
      * 
      * @param {string} direction - Given "up", "down", "left", or "right" as string input, it makes the appropriate shifts and adds a random tile.
+     * @param {boolean} immutable - Set true to disable mutation of the gameState, useful for checking game loss
+     * @returns {boolean} True if legal move exists (if immutable = true) / has been made (if immutable = false)
      */
-	move(direction) {
+	move(direction, immutable = false) {
 		let legal = false;
 		switch (direction) {
 			case 'up':
@@ -82,13 +90,9 @@ export default class Game {
 					for (let j = i; j < this.size ** 2; j += this.size) {
 						indices.push(j);
 					}
-					const legalSection = this.slideArray(indices);
+					const legalSection = this.slideArray(indices, immutable);
 					legal = legal || legalSection;
 				}
-				if (legal) {
-					this.generateTile();
-				}
-				console.log(this.toString());
 				break;
 			case 'down':
 				for (let i = this.size ** 2 - 1; i >= 0; i--) {
@@ -96,13 +100,9 @@ export default class Game {
 					for (let j = i; j >= 0; j -= this.size) {
 						indices.push(j);
 					}
-					const legalSection = this.slideArray(indices);
+					const legalSection = this.slideArray(indices, immutable);
 					legal = legal || legalSection;
 				}
-				if (legal) {
-					this.generateTile();
-				}
-				console.log(this.toString());
 				break;
 			case 'left':
 				for (let i = 0; i < this.size ** 2; i += this.size) {
@@ -111,13 +111,9 @@ export default class Game {
 						indices.push(j);
 					}
 
-					const legalSection = this.slideArray(indices);
+					const legalSection = this.slideArray(indices, immutable);
 					legal = legal || legalSection;
 				}
-				if (legal) {
-					this.generateTile();
-				}
-				console.log(this.toString());
 				break;
 			case 'right':
 				for (let i = this.size - 1; i < this.size ** 2; i += this.size) {
@@ -126,23 +122,40 @@ export default class Game {
 						indices.push(j);
 					}
 
-					const legalSection = this.slideArray(indices);
+					const legalSection = this.slideArray(indices, immutable);
 					legal = legal || legalSection;
 				}
-				if (legal) {
-					this.generateTile();
-				}
-				console.log(this.toString());
 				break;
 		}
+
+		if (!immutable) {
+			this.update('move');
+
+			if (legal) {
+				this.generateTile();
+			}
+			console.log(this.toString());
+
+			if (this.checkWin()) {
+				this.gameState.won = true;
+				this.update('win');
+			}
+			if (this.checkLoss()) {
+				this.gameState.over = true;
+				this.update('lose');
+			}
+		}
+
+		return legal;
 	}
 
 	/**
      * Treats every move as a 'left' (<--) move and slides/combines values accordingly 
      * @param {array} indices - Array of indexes of the section to be slid in order ex. left shift of [1, 2, 3] => section = [0, 1, 2]
-     * @returns {Boolean} legal - Returns True if the move is legal
+     * @param {boolean} immutable - Set true to disable mutation of the gameState, useful for checking game loss
+     * @returns {boolean} True if the move is legal
      */
-	slideArray(indices) {
+	slideArray(indices, immutable) {
 		const values = indices.map((i) => this.gameState.board[i]);
 
 		const res = [];
@@ -165,6 +178,9 @@ export default class Game {
 
 			if (curr === prev) {
 				res.push(curr + prev);
+				if (!immutable) {
+					this.gameState.score += curr + prev;
+				}
 				prev = null;
 				i++;
 			}
@@ -175,7 +191,6 @@ export default class Game {
 			}
 		}
 
-		// console.log(prev);
 		if (prev) {
 			res.push(prev);
 		}
@@ -189,11 +204,34 @@ export default class Game {
 			const boardIndex = indices[i];
 
 			legal = legal || this.gameState.board[boardIndex] !== res[i];
-			this.gameState.board[boardIndex] = res[i];
+			if (!immutable) {
+				this.gameState.board[boardIndex] = res[i];
+			}
 		}
 
 		return legal;
 	}
+
+	/**
+     * 
+     * @returns True if 2048 tile exists
+     */
+	checkWin = () => {
+		return this.gameState.board.includes(2048);
+	};
+
+	/**
+     * 
+     * @returns True if no valid moves left
+     */
+	checkLoss = () => {
+		return !(
+			this.move('up', true) ||
+			this.move('down', true) ||
+			this.move('left', true) ||
+			this.move('right', true)
+		);
+	};
 
 	/**
      * 
@@ -218,17 +256,31 @@ export default class Game {
      *Takes a callback function as input and registers that function as a listener to the move event. Every time a move is made, the game should call all previously registered move callbacks, passing in the game's current gameState as an argument to the function. 
      * @param {function} callback 
      */
-	onMove(callback) {}
+	onMove(callback) {
+		this.boardObservers.move.push(callback);
+	}
 
 	/**
      * Takes a callback function as input and registers that function as a listener to the win event. When the player wins the game (by making a 2048 tile), the game should call all previously registered win callbacks, passing in the game's current gameState as an argument to the function.
      * @param {function} callback 
      */
-	onWin(callback) {}
+	onWin(callback) {
+		this.boardObservers.win.push(callback);
+	}
 
 	/**
      * Takes a callback function as input and registers that function as a listener to the move event. When the game transitions into a state where no more valid moves can be made, the game should call all previously registered lose callbacks, passing in the game's current gameState as an argument to the function.
      * @param {function} callback 
      */
-	onLose(callback) {}
+	onLose(callback) {
+		this.boardObservers.lose.push(callback);
+	}
+
+	/**
+     *  Calls all callbacks registered under the event
+     * @param {string} event - Event to be emmitted
+     */
+	update(event) {
+		this.boardObservers[event].forEach((listener) => listener(this.getGameState()));
+	}
 }
