@@ -50,6 +50,13 @@ export default class Game {
 
 		this.generateTile();
 		this.generateTile();
+
+		this.gameState = {
+			...this.gameState,
+			score : 0,
+			won   : false,
+			over  : false
+		};
 	}
 
 	/**
@@ -72,7 +79,7 @@ export default class Game {
      * @param {Object} gameState - new gameState object
      */
 	loadGame(gameState) {
-		this.gameState = gameState;
+		this.gameState = { ...this.gameState, ...gameState };
 	}
 
 	/**
@@ -90,8 +97,10 @@ export default class Game {
 					for (let j = i; j < this.size ** 2; j += this.size) {
 						indices.push(j);
 					}
-					const legalSection = this.slideArray(indices, immutable);
-					legal = legal || legalSection;
+					if (indices.length === this.size) {
+						const legalSection = this.slideArray(indices, immutable);
+						legal = legal || legalSection;
+					}
 				}
 				break;
 			case 'down':
@@ -100,8 +109,10 @@ export default class Game {
 					for (let j = i; j >= 0; j -= this.size) {
 						indices.push(j);
 					}
-					const legalSection = this.slideArray(indices, immutable);
-					legal = legal || legalSection;
+					if (indices.length === this.size) {
+						const legalSection = this.slideArray(indices, immutable);
+						legal = legal || legalSection;
+					}
 				}
 				break;
 			case 'left':
@@ -111,8 +122,10 @@ export default class Game {
 						indices.push(j);
 					}
 
-					const legalSection = this.slideArray(indices, immutable);
-					legal = legal || legalSection;
+					if (indices.length === this.size) {
+						const legalSection = this.slideArray(indices, immutable);
+						legal = legal || legalSection;
+					}
 				}
 				break;
 			case 'right':
@@ -122,19 +135,18 @@ export default class Game {
 						indices.push(j);
 					}
 
-					const legalSection = this.slideArray(indices, immutable);
-					legal = legal || legalSection;
+					if (indices.length === this.size) {
+						const legalSection = this.slideArray(indices, immutable);
+						legal = legal || legalSection;
+					}
 				}
 				break;
 		}
 
 		if (!immutable) {
-			this.update('move');
-
 			if (legal) {
 				this.generateTile();
 			}
-			console.log(this.toString());
 
 			if (this.checkWin()) {
 				this.gameState.won = true;
@@ -144,6 +156,7 @@ export default class Game {
 				this.gameState.over = true;
 				this.update('lose');
 			}
+			this.update('move');
 		}
 
 		return legal;
