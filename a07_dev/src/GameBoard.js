@@ -1,7 +1,7 @@
 const GameBoard = ({ gameState }) => {
 	const tiles = gameState.board.map((tile, i) => (
 		<div className="tile" key={i}>
-			<span>{tile}</span>
+			<span>{tile !== 0 ? tile : null}</span>
 		</div>
 	));
 
