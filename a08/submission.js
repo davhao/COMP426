@@ -1,12 +1,10 @@
 /**
  * Course: COMP 426
  * Assignment: a08
- * Author: <type your name here>
+ * Author: David Hao
  *
  * This script uses axios to make simple HTTP requests to the COMP 426 server
  */
-
-
 
 /**
  * This function should use axios to make a GET request to the following url:
@@ -19,9 +17,9 @@
  * @returns  {Object}  The body of the HTTP response.
  */
 export async function fn1() {
-
-};
-
+	const res = await axios.get('https://comp426-1fa20.cs.unc.edu/a08/heroes');
+	return res.data;
+}
 
 /**
  * Like fn1(), this function should use axios to make a GET request to the
@@ -39,9 +37,9 @@ export async function fn1() {
  * @returns  {Number}  The HTTP status code of the response.
  */
 export async function fn2() {
-
-};
-
+	const res = await axios.get('https://comp426-1fa20.cs.unc.edu/a08/heroes', { params: { sort: 'first ASC' } });
+	return res.status;
+}
 
 /**
  * This function should use axios to make a POST request to the following url:
@@ -70,9 +68,12 @@ export async function fn2() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn3() {
-  
-};
+	const res = await axios.post('https://comp426-1fa20.cs.unc.edu/a08/users', null, {
+		params : { first: 'David', last: 'Hao', onyen: 'djhao' }
+	});
 
+	return res;
+}
 
 /**
  * Sometimes, the server isn't able to fulfill a request. In this case, it may
@@ -92,9 +93,16 @@ export async function fn3() {
  *                     request fails
  */
 export async function fn4() {
-  
-};
+	try {
+		const res = await axios.post('https://comp426-1fa20.cs.unc.edu/a08/users', null, {
+			params : { first: 'David', last: 'Hao' }
+		});
 
+		return res;
+	} catch (e) {
+		return e;
+	}
+}
 
 /**
  * This function should use axios to make a PUT request to the following url:
@@ -110,9 +118,12 @@ export async function fn4() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn5() {
-  
-};
+	const res = await axios.put('https://comp426-1fa20.cs.unc.edu/a08/headers', undefined, {
+		headers : { 'my-custom-request-header': 'Hello, World!' }
+	});
 
+	return res;
+}
 
 /**
  * This function should use axios to make a GET request to the following url:
@@ -131,5 +142,7 @@ export async function fn5() {
  *   "my-custom-response-header"
  */
 export async function fn6() {
-  
-};
+	const res = await axios.get('https://comp426-1fa20.cs.unc.edu/a08/headers');
+
+	return res.headers['my-custom-response-header'];
+}
