@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-import composeIcon from '../compose.png';
+import composeIcon from '../compose_gray.png';
 import delteIcon from '../delete.png';
 import Compose from './Compose';
 
@@ -108,7 +108,7 @@ const Tweet = ({ tweet }) => {
 		<div className="card">
 			<div>
 				<span>
-					<strong>@{author}</strong>
+					<strong className="author">@{author}</strong>
 				</span>
 			</div>
 			<span dangerouslySetInnerHTML={{ __html: body }} />

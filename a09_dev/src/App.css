@@ -37,12 +37,37 @@
 	}
 }
 
+* {
+	background-color: black;
+	color: white;
+}
+
+.mainpage {
+	padding-top: 2rem;
+}
+
+.title {
+	color: white;
+}
+
+.card {
+	background-color: inherit;
+	border: 1px solid #6e767d7a;
+	border-left: 2px solid #6e767d7a;
+	border-right: 2px solid #6e767d7a;
+	padding: 1rem;
+}
+
 .feed {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
 	width: 60%;
 	margin: auto;
+}
+
+.author {
+	color: white;
 }
 
 .twt-btn {
@@ -54,11 +79,13 @@
 	justify-content: space-between;
 	align-items: center;
 	width: 80%;
-	margin: auto;
+	margin: 1rem auto 0 auto;
 }
 
 .tweet-stats > span {
 	display: flex;
+	color: #6e767d;
+	fill: #6e767d;
 }
 
 .tweet-stats > img {
@@ -67,6 +94,7 @@
 
 .reply:hover {
 	fill: #1ca1f2;
+	color: #1ca1f2;
 	cursor: pointer;
 }
 
@@ -94,17 +122,24 @@
 	cursor: pointer;
 }
 
+.modal {
+	background-color: #00000057;
+}
+
 .modal-content {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	background-color: white;
 	padding: 1rem 1.5rem;
 	position: fixed;
 	left: 25%;
 	width: 50%;
 	top: 25%;
-	border: 3px solid black;
+	border: 3px solid #6e767d;
+}
+
+.modal-content > strong {
+	color: white;
 }
 
 .tweet-compose-box > textarea {

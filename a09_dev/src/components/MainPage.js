@@ -16,7 +16,16 @@ const MainPage = () => {
 			const res = await axios({
 				method          : 'get',
 				url             : 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
-				withCredentials : true
+				withCredentials : true,
+				params          : {
+					where: {
+						type: [
+							'tweet',
+							'retweet',
+							'reply'
+						]
+					}
+				}
 			});
 			setTweets(res.data);
 		};
