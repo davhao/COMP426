@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 
+import composeIcon from '../compose.png';
+import delteIcon from '../delete.png';
+import Compose from './Compose';
+
 const rt = (
 	<svg viewBox="0 0 24 24" className="twt-btn">
 		<g>
@@ -17,8 +21,16 @@ const like = (
 	</svg>
 );
 
+const reply = (
+	<svg viewBox="0 0 24 24" className="twt-btn">
+		<g>
+			<path d="M14.046 2.242l-4.148-.01h-.002c-4.374 0-7.8 3.427-7.8 7.802 0 4.098 3.186 7.206 7.465 7.37v3.828c0 .108.044.286.12.403.142.225.384.347.632.347.138 0 .277-.038.402-.118.264-.168 6.473-4.14 8.088-5.506 1.902-1.61 3.04-3.97 3.043-6.312v-.017c-.006-4.367-3.43-7.787-7.8-7.788zm3.787 12.972c-1.134.96-4.862 3.405-6.772 4.643V16.67c0-.414-.335-.75-.75-.75h-.396c-3.66 0-6.318-2.476-6.318-5.886 0-3.534 2.768-6.302 6.3-6.302l4.147.01h.002c3.532 0 6.3 2.766 6.302 6.296-.003 1.91-.942 3.844-2.514 5.176z" />
+		</g>
+	</svg>
+);
+
 const Tweet = ({ tweet }) => {
-	const { author, body, likeCount, retweetCount, isLiked, id } = tweet;
+	const { author, body, replyCount, likeCount, retweetCount, isLiked, id, isMine } = tweet;
 
 	const [
 		liked,
@@ -30,7 +42,21 @@ const Tweet = ({ tweet }) => {
 		setLikes
 	] = useState(likeCount);
 
+	const [
+		editing,
+		setEditing
+	] = useState(false);
+
+	const [
+		replying,
+		setReplying
+	] = useState(false);
+
 	const toggleLike = async () => {
+		if (isMine) {
+			return;
+		}
+
 		try {
 			await axios({
 				method          : 'put',
@@ -45,6 +71,39 @@ const Tweet = ({ tweet }) => {
 		}
 	};
 
+	const deleteTweet = async () => {
+		try {
+			await axios({
+				method          : 'delete',
+				url             : `https://comp426-1fa20.cs.unc.edu/a09/tweets/${id}`,
+				withCredentials : true
+			});
+
+			window.location.reload();
+		} catch (e) {
+			console.error(e);
+		}
+	};
+
+	const retweet = async () => {
+		try {
+			await axios({
+				method          : 'post',
+				url             : 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
+				withCredentials : true,
+				data            : {
+					type   : 'retweet',
+					parent : id,
+					body   : `Retweeted @${author}'s Tweet:\n ${body}`
+				}
+			});
+
+			window.location.reload();
+		} catch (e) {
+			console.error(e);
+		}
+	};
+
 	return (
 		<div className="card">
 			<div>
@@ -54,13 +113,34 @@ const Tweet = ({ tweet }) => {
 			</div>
 			<span dangerouslySetInnerHTML={{ __html: body }} />
 			<div className="tweet-stats">
+				<span className="reply" onClick={() => setReplying(true)}>
+					{reply} {replyCount}
+				</span>
 				<span className={`like ${liked ? 'liked' : null}`} onClick={() => toggleLike()}>
 					{like} {likes}
 				</span>
-				<span className="rt">
+				<span className="rt" onClick={() => retweet()}>
 					{rt} {retweetCount}
 				</span>
+				{isMine ? (
+					<img
+						alt="pen"
+						src={composeIcon}
+						style={{ width: '1rem', height: '1rem' }}
+						onClick={() => setEditing(true)}
+					/>
+				) : null}
+				{isMine ? (
+					<img
+						alt="trash"
+						src={delteIcon}
+						style={{ width: '1rem', height: '1rem' }}
+						onClick={() => deleteTweet()}
+					/>
+				) : null}
 			</div>
+			{editing ? <Compose setOpen={setEditing} editing={true} body={body} id={id} /> : null}
+			{replying ? <Compose setOpen={setReplying} replying={true} body={body} id={id} author={author} /> : null}
 		</div>
 	);
 };
