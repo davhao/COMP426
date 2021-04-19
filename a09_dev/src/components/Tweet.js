@@ -29,7 +29,7 @@ const reply = (
 	</svg>
 );
 
-const Tweet = ({ tweet }) => {
+const Tweet = ({ tweet, getTweets }) => {
 	const { author, body, replyCount, likeCount, retweetCount, isLiked, id, isMine } = tweet;
 
 	const [
@@ -79,7 +79,7 @@ const Tweet = ({ tweet }) => {
 				withCredentials : true
 			});
 
-			window.location.reload();
+			getTweets();
 		} catch (e) {
 			console.error(e);
 		}
@@ -98,7 +98,7 @@ const Tweet = ({ tweet }) => {
 				}
 			});
 
-			window.location.reload();
+			getTweets();
 		} catch (e) {
 			console.error(e);
 		}
@@ -139,8 +139,17 @@ const Tweet = ({ tweet }) => {
 					/>
 				) : null}
 			</div>
-			{editing ? <Compose setOpen={setEditing} editing={true} body={body} id={id} /> : null}
-			{replying ? <Compose setOpen={setReplying} replying={true} body={body} id={id} author={author} /> : null}
+			{editing ? <Compose setOpen={setEditing} getTweets={getTweets} editing={true} body={body} id={id} /> : null}
+			{replying ? (
+				<Compose
+					setOpen={setReplying}
+					getTweets={getTweets}
+					replying={true}
+					body={body}
+					id={id}
+					author={author}
+				/>
+			) : null}
 		</div>
 	);
 };

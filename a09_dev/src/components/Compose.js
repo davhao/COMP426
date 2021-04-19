@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const Compose = ({ setOpen, replying, editing, body, id, author }) => {
+const Compose = ({ setOpen, getTweets, replying, editing, body, id, author }) => {
 	const [
 		tweet,
 		setTweet
@@ -26,7 +26,8 @@ const Compose = ({ setOpen, replying, editing, body, id, author }) => {
 						}
 			});
 
-			window.location.reload();
+			getTweets();
+			setOpen();
 		} catch (e) {
 			console.error(e);
 		}
